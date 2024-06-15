@@ -6,18 +6,13 @@ namespace UploadFileSupabase.Controllers
     [Route("[controller]")]
     public class SupabaseUploadController : ControllerBase
     {
-        private readonly SupabaseUploader _uploader;
-
-        public SupabaseUploadController()
-        {
-            _uploader = new SupabaseUploader();
-        }
-
         [HttpPost]
         [Route("upload-from-url")]
         public async Task<IActionResult> UploadFromUrl([FromBody] UploadFromUrlRequest request)
         {
-            var result = await _uploader.UploadFileFromUrlAsync(request.Url, request.PathInBucket, request.BucketName);
+            var _uploader = new SupabaseUploader(request.UrlSupabase, request.AnonKeySupabase);
+            
+            var result = await _uploader.UploadFileFromUrlAsync(request.FileUrl, request.PathInBucket, request.BucketName);
             if (result.success)
             {
                 return Ok(new { Url = result.url });
@@ -32,6 +27,7 @@ namespace UploadFileSupabase.Controllers
             if (request.File.Length > 0)
             {
                 // Usar o nome original do arquivo
+                var _uploader = new SupabaseUploader(request.UrlSupabase, request.AnonKeySupabase);
                 var originalFileName = Path.GetFileName(request.File.FileName);
                 var filePath = Path.GetTempFileName();
 
@@ -56,14 +52,17 @@ namespace UploadFileSupabase.Controllers
 
     public class UploadFromUrlRequest
     {
-        public required string Url
-        public required string Url { get; set; }
+        public required string UrlSupabase { get; set; }
+        public required string AnonKeySupabase { get; set; }
+        public required string FileUrl { get; set; }
         public required string PathInBucket { get; set; }
         public required string BucketName { get; set; }
     }
 
     public class UploadFileRequest
     {
+        public required string UrlSupabase { get; set; }
+        public required string AnonKeySupabase { get; set; }
         public required IFormFile File { get; set; }
         public required string PathInBucket { get; set; }
         public required string BucketName { get; set; }

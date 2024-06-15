@@ -1,18 +1,9 @@
-﻿using System;
+﻿using UploadFileSupabase;
 using Client = Supabase.Client;
 
-public class SupabaseUploader
+public record SupabaseUploader(string Url, string Key)
 {
-    private readonly Client _client;
-
-    public SupabaseUploader(string Url, string Key)
-    {
-       // Url = "https://wnngxjzcvzhjeainxfyb.supabase.co";
-       // Key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indubmd4anpjdnpoamVhaW54ZnliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDg2NTYzMjAsImV4cCI6MjAyNDIzMjMyMH0.Z2LiHFSwJtsF1imYumfQ7YYDNksVrZmmpqXzio-XT90";
-        _client = new Client(Url, Key);       
-    }
-
-    public string Url { get; }
+    private readonly Client _client = new Client(Url, Key);
 
     public async Task<(bool success, string url, string errorMessage)> UploadFileAsync(string filePath, string pathInBucket, string bucketName, string fileName)
     {
@@ -23,12 +14,14 @@ public class SupabaseUploader
         {
             await _client.InitializeAsync();
 
-            var storage = _client.Storage;
-            var bucket = storage.From(bucketName);       
-            var fileBytes = File.ReadAllBytes(filePath);
-            var pathUpload = $"{pathInBucket}/{fileName}";         
+            fileName = StringUtils.RemoveSpecialCharactersFromFileName(fileName);
 
-            var result = await bucket.Upload(fileBytes, pathUpload, new Supabase.Storage.FileOptions {Upsert = true});
+            var storage = _client.Storage;
+            var bucket = storage.From(bucketName);
+            var fileBytes = File.ReadAllBytes(filePath);
+            var pathUpload = $"{pathInBucket}/{fileName}";
+
+            var result = await bucket.Upload(fileBytes, pathUpload, new Supabase.Storage.FileOptions { Upsert = true });
 
             if (result == null)
             {
