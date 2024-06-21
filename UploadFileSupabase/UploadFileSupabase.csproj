@@ -4,6 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>preview</LangVersion>
     <StartupObject></StartupObject>
     <UserSecretsId>37e61c12-3352-48c0-9bfe-69656f9ee90f</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
