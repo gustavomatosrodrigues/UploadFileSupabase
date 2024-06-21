@@ -12,7 +12,7 @@ WORKDIR /src
 COPY ["UploadFileSupabase/UploadFileSupabase.csproj", "UploadFileSupabase/"]
 RUN dotnet restore "./UploadFileSupabase/UploadFileSupabase.csproj"
 COPY . .
-WORKDIR "/src/."
+WORKDIR "/src/UploadFileSupabase"
 RUN dotnet build "./UploadFileSupabase.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
