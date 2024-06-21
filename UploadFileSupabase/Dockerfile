@@ -8,11 +8,11 @@ EXPOSE 8081
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 ARG BUILD_CONFIGURATION=Release
-WORKDIR /src/UploadFileSupabase
+WORKDIR /src
 COPY ["UploadFileSupabase/UploadFileSupabase.csproj", "UploadFileSupabase/"]
 RUN dotnet restore "./UploadFileSupabase/UploadFileSupabase.csproj"
 COPY . .
-WORKDIR "/src/UploadFileSupabase"
+WORKDIR "/src/."
 RUN dotnet build "./UploadFileSupabase.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
